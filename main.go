@@ -36,6 +36,10 @@ func main() {
 	mux.HandleFunc("POST /v1/feeds", api.authMiddleware(api.CreateFeedHandler))
 	mux.HandleFunc("GET /v1/feeds", api.GetFeedsHandler)
 	mux.HandleFunc("POST /v1/feed_follows", api.authMiddleware(api.CreateFeedFollowHandler))
+	mux.HandleFunc("DELETE /v1/feed_follows", api.authMiddleware(api.DeleteFeedFollowHandler))
+
+	log.Println("serving on the port " + os.Getenv("PORT"))
+	go api.FetchWorker(10)
 
 	server := http.Server{
 		Handler: mux,
@@ -44,5 +48,5 @@ func main() {
 
 	log.Fatal(server.ListenAndServe())
 	server.ListenAndServe()
-	log.Println("serving on the port " + os.Getenv("PORT"))
+
 }
